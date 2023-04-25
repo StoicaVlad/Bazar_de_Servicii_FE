@@ -20,9 +20,9 @@ function SignUp(props: any) {
 
   const checkPasswordRestrictions = () => {
     if (
-      password.length < 8 ||
-      password.match(/[A-Z]/g) === null ||
-      password.match[/[0-9]/g] === null
+      password.length < 8
+      || password.match(/[A-Z]/g) === null
+      //|| password.match[/[0-9]/g] === null
     ) {
       setErrorString(
         "Password does not match restrictions!\nIt should have minimum 8 characters, an uppercase letter and a number!"
