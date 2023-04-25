@@ -21,3 +21,11 @@ body {
 .mt-200 {
     margin-top: 200px
 }
+
+.main-content {
+    padding: 30px;
+}
+
+.service-card {
+    padding: 10px;
+}

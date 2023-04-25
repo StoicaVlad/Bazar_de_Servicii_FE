@@ -20,8 +20,8 @@ function SignUp(props: any) {
 
   const checkPasswordRestrictions = () => {
     if (
-      password.length < 8
-      || password.match(/[A-Z]/g) === null
+      password.length < 8 ||
+      password.match(/[A-Z]/g) === null
       //|| password.match[/[0-9]/g] === null
     ) {
       setErrorString(
@@ -33,14 +33,15 @@ function SignUp(props: any) {
   };
 
   const handleSubmit = async (e: any) => {
-    if (checkPasswordRestrictions()) {
+    if(validationMessage.length) {
+      props.handleClose(validationMessage);
+      return;
+    }
+
+    if (checkPasswordRestrictions() && !validationMessage.length) {
       e.preventDefault();
       await axiosBaseURL
-        .post(
-          "api/auth/signup",
-          { username, password, role: [role] },
-          config
-        )
+        .post("api/auth/signup", { username, password, role: [role] }, config)
         .then((response) => {
           setValidationMessage(response.data.message);
         })
@@ -118,14 +119,14 @@ function SignUp(props: any) {
             <Modal.Body style={{ color: "red" }}>{errorString}</Modal.Body>
           ) : null}
           <Modal.Footer>
-            <Button variant="secondary" onClick={props.handleClose}>
-              Close
-            </Button>
             {!validationMessage.length ? (
-              <Button variant="primary" onClick={handleSubmit}>
-                Submit
+              <Button variant="secondary" onClick={props.handleClose}>
+                Close
               </Button>
             ) : null}
+            <Button variant="primary" onClick={handleSubmit}>
+              {validationMessage.length ? "Next" : "Submit"}
+            </Button>
           </Modal.Footer>
         </Modal>
       </div>
