@@ -1,0 +1,32 @@
+.main {
+    min-height: 93vh;
+    display: flex;
+    align-items: center;
+    background-image: url("../../assets/landing_bg.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.title {
+    font-size: 45px;
+}
+
+.subtitle {
+    font-size: 20px;
+    padding-top: 1px;
+}
+
+.intro-text {
+    width: 100%;
+}
+
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content:left;
+}
+
+.landing-button {
+    width: 200px;
+    height: 55px;
+}
