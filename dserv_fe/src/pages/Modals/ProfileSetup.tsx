@@ -19,14 +19,14 @@ function ProfileSetup(props: any) {
   const [validationMessage, setValidationMessage] = useState("");
 
   const [profileData, setProfileData] = useState({
-    firsName: '',
-    lastName: '',
-    emailAddress: '',
-    phoneNumber: '',
-    city: '',
-    county: '',
-    street: '',
-    userId: -1
+    firsName: "",
+    lastName: "",
+    emailAddress: "",
+    phoneNumber: "",
+    city: "",
+    county: "",
+    street: "",
+    userId: -1,
   });
 
   const checkPasswordRestrictions = () => {

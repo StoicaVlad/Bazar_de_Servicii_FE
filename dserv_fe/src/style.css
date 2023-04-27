@@ -29,3 +29,17 @@ body {
 .service-card {
     padding: 10px;
 }
+
+.carousel {
+    margin-bottom: 75px;
+    margin-left: 400px;
+    margin-right: 400px;
+    margin-top: 75px;
+}
+
+.table {
+    padding-left: 200px;
+    padding-right: 200px;
+    margin-top: 50px;
+    border: #495057;
+}

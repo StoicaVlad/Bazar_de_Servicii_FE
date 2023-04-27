@@ -4,6 +4,9 @@ import Footer from "./components/Footer/Footer";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import Home from "./pages/Home";
 import { useState, useEffect } from "react";
+import { Routes, Route, Link, BrowserRouter } from 'react-router-dom';
+import Services from "./pages/Services";
+
 
 function App() {
   const [accountData, setAccountData] = useState({
@@ -51,12 +54,19 @@ function App() {
       {accountData.userLogged === true ? <Header {...headerInfo} /> : null}
       <main style={{ minHeight: "93vh" }}>
         {accountData.userLogged === true ? (
-          <Home></Home>
+          <>
+          <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+          </Routes>
+          </BrowserRouter>
+          </>
         ) : (
           <LandingPage handleAppCallback={receiveAccountData}></LandingPage>
         )}
       </main>
-      {accountData.token}
+      {/* {accountData.token} */}
       <Footer />
     </>
   );

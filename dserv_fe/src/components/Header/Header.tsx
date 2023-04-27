@@ -2,6 +2,9 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { Link } from 'react-router-dom';
+
+
 
 const Header = (userData: {roles: string[], username: string}) => {
   return (
@@ -15,19 +18,21 @@ const Header = (userData: {roles: string[], username: string}) => {
             style={{ maxHeight: "100px" }}
             navbarScroll
           >
-            <Nav.Link href="#action1">Acasa</Nav.Link>
-            <Nav.Link href="#action2">Servicii</Nav.Link>
-            <Nav.Link href="#action6">Anunturi</Nav.Link>
+            <Nav.Link href="/">
+            Acasa
+            </Nav.Link>
+            <Nav.Link href="/services">Servicii</Nav.Link>
+            <Nav.Link href="/announcements">Anunturi</Nav.Link>
             <NavDropdown title={userData.username} id="navbarScrollingDropdown">
               { userData.roles.includes("ROLE_CLIENT") ?
               <NavDropdown.Item href="#action3">
                 Anunturile mele
               </NavDropdown.Item> : null }
               { userData.roles.includes("ROLE_PROVIDER") ?
-              <NavDropdown.Item href="#action3">
+              <NavDropdown.Item href="/services">
                 Serviciile mele
               </NavDropdown.Item> : null }
-              <NavDropdown.Item href="#action4">Profil</NavDropdown.Item>
+              <NavDropdown.Item href="/profile">Profil</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action5">Logout</NavDropdown.Item>
             </NavDropdown>
