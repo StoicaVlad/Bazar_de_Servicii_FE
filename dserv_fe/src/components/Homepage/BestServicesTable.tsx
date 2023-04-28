@@ -16,37 +16,68 @@ const BestServicesTable = () => {
   const [tablePageData, setTablePageData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
   const [pages, setPages] = useState<number[]>([]);
-  const pageSize = 1;
-  let pageNumbers = -1;
+  const pageSize = 3;
+  const [pageNumbers, setPageNumbers] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axiosBaseURL
       .get("api/services/show", config)
       .then((response) => {
-        console.log(response.data);
         setTableData(response?.data);
         setTablePageData(response?.data.slice(0, pageSize));
-        console.log(tableData);
-        pageNumbers = Math.trunc(response.data.length / pageSize);
-        setPages(Array.from(Array(pageNumbers).keys()));
-        console.log("pageNumbers", pageNumbers);
+        setPageNumbers(Math.ceil(response.data.length / pageSize));
+        setPages(Array.from(Array((Math.ceil(response.data.length / pageSize))).keys()));
+        
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const nextPage = (pageIndex: number) => {
-    console.log(pageIndex, currentPage);
+  const changePage = (pageIndex: number) => {
+    let startIndex = currentPage;
+    let finalIndex = currentPage;
     if(pageIndex > currentPage) {
-    setTablePageData(tableData.splice(currentPage * pageSize, (currentPage + 1) * pageSize));
+      startIndex = currentPage * pageSize;
+      finalIndex = (currentPage + 1) * pageSize;
+    setTablePageData(tableData.slice(startIndex, finalIndex));
     setCurrentPage(pageIndex);
     }
     if(pageIndex < currentPage) {
-      setTablePageData(tableData.splice((currentPage - 1) * pageSize, currentPage * pageSize));
+      startIndex = (currentPage - 2) * pageSize;
+      finalIndex = (currentPage - 1) * pageSize;
+      setTablePageData(tableData.slice(startIndex, finalIndex));
       setCurrentPage(pageIndex);
       }
+  }
+
+  const goToNext = () => {
+    const startIndex = currentPage * pageSize;
+    const finalIndex = (currentPage + 1) * pageSize;
+    setTablePageData(tableData.slice(startIndex, finalIndex));
+    setCurrentPage(currentPage + 1);
+  }
+
+  const goToPrev = () => {
+    const startIndex = (currentPage - 2) * pageSize;
+    const finalIndex = (currentPage - 1) * pageSize;
+      setTablePageData(tableData.slice(startIndex, finalIndex));
+      setCurrentPage(currentPage - 1);
+  }
+
+  const goToFirst = () => {
+    const startIndex = 0;
+    const finalIndex = pageSize;
+    setTablePageData(tableData.slice(startIndex, finalIndex));
+    setCurrentPage(startIndex + 1);
+  }
+
+  const goToLast = () => {
+    const startIndex = (pageNumbers - 1) * pageSize;
+    const finalIndex = pageSize * pageNumbers;
+    setTablePageData(tableData.slice(startIndex, finalIndex));
+    setCurrentPage(pageNumbers);
   }
 
   const tableDataSearchFilter = tablePageData
@@ -93,13 +124,14 @@ const BestServicesTable = () => {
       </div>
       <div className="table">
         <Pagination>
-          <Pagination.First />
-          <Pagination.Prev />
+          <Pagination.First onClick={goToFirst}/>
+          <Pagination.Prev onClick={goToPrev} disabled={currentPage <= 1}/>
           {pages.map((item, index) => (
-            <Pagination.Item onClick={() => nextPage(index + 1)} key={index}>{index + 1} </Pagination.Item>
+            <Pagination.Item active={index + 1 === currentPage}
+            onClick={() => changePage(index + 1)} key={index}>{index + 1} </Pagination.Item>
           ))}
-          <Pagination.Next />
-          <Pagination.Last />
+          <Pagination.Next onClick={goToNext} disabled={currentPage >= pageNumbers}/>
+          <Pagination.Last onClick={goToLast}/>
         </Pagination>
       </div>
     </>
