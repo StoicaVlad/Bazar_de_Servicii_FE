@@ -119,14 +119,12 @@ function SignUp(props: any) {
             <Modal.Body style={{ color: "red" }}>{errorString}</Modal.Body>
           ) : null}
           <Modal.Footer>
-            {!validationMessage.length ? (
               <Button variant="secondary" onClick={props.handleClose}>
                 Close
               </Button>
-            ) : null}
-            <Button variant="primary" onClick={handleSubmit}>
-              {validationMessage.length ? "Next" : "Submit"}
-            </Button>
+            {!validationMessage.length ? 
+            <Button variant="primary" onClick={handleSubmit}> Submit
+            </Button> : null}
           </Modal.Footer>
         </Modal>
       </div>

@@ -2,11 +2,8 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Link } from 'react-router-dom';
 
-
-
-const Header = (userData: {roles: string[], username: string}) => {
+const Header = (userData: {roles: string[], username: string, profileId: string}) => {
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
@@ -29,7 +26,7 @@ const Header = (userData: {roles: string[], username: string}) => {
                 Anunturile mele
               </NavDropdown.Item> : null }
               { userData.roles.includes("ROLE_PROVIDER") ?
-              <NavDropdown.Item href="/services">
+              <NavDropdown.Item href={"/services/" + userData.profileId}>
                 Serviciile mele
               </NavDropdown.Item> : null }
               <NavDropdown.Item href="/profile">Profil</NavDropdown.Item>

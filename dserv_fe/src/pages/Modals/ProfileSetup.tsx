@@ -4,21 +4,11 @@ import { useState } from "react";
 import "../../components/HttpCommon";
 import axiosBaseURL from "../../components/HttpCommon";
 
-let config = {
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Content-Type": "application/json;charset=UTF-8",
-  },
-};
-
 function ProfileSetup(props: any) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const [errorString, setErrorString] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
 
-  const [profileData, setProfileData] = useState({
+  const [profileData] = useState({
     firsName: "",
     lastName: "",
     emailAddress: "",
@@ -29,40 +19,49 @@ function ProfileSetup(props: any) {
     userId: -1,
   });
 
-  const checkPasswordRestrictions = () => {
-    if (
-      password.length < 8 ||
-      password.match(/[A-Z]/g) === null
-      //|| password.match[/[0-9]/g] === null
-    ) {
-      setErrorString(
-        "Password does not match restrictions!\nIt should have minimum 8 characters, an uppercase letter and a number!"
-      );
-      return false;
-    }
-    return true;
+  const handleClose = () => {
+    props.handleProfileCallback(validationMessage);
   };
 
   const handleSubmit = async (e: any) => {
-    if (checkPasswordRestrictions()) {
-      e.preventDefault();
-      await axiosBaseURL
-        .post("api/auth/signup", { username, password, role: [role] }, config)
-        .then((response) => {
-          setValidationMessage(response.data.message);
-        })
-        .catch((error) => {
-          const errorUnjsonified = error.request.response
-            .split("message")
-            .pop();
-          setErrorString(
-            errorUnjsonified.substring(
-              errorUnjsonified.indexOf('"') + 3,
-              errorUnjsonified.lastIndexOf('"')
-            )
-          );
-        });
-    }
+    let config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json;charset=UTF-8",
+        Authorization: "Bearer " + props.token,
+      },
+    };
+
+    e.preventDefault();
+    profileData.userId = props.userId;
+    await axiosBaseURL
+      .post(
+        "api/profile/createProfile",
+        {
+            userId: profileData.userId,
+            emailAddress: profileData.emailAddress,
+            phoneNumber: profileData.phoneNumber,
+            firstName: profileData.firsName,
+            lastName: profileData.lastName,
+            city: profileData.city,
+            county: profileData.county,
+            street: profileData.street
+        },
+        config
+      )
+      .then((response) => {
+        console.log(response);
+        setValidationMessage(response.data);
+      })
+      .catch((error) => {
+        const errorUnjsonified = error.request.response.split("message").pop();
+        setErrorString(
+          errorUnjsonified.substring(
+            errorUnjsonified.indexOf('"') + 3,
+            errorUnjsonified.lastIndexOf('"')
+          )
+        );
+      });
   };
 
   return (
@@ -116,7 +115,7 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  setUsername(e.target.value);
+                  profileData.firsName = e.target.value;
                   setErrorString("");
                 }}
               >
@@ -131,7 +130,7 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  setUsername(e.target.value);
+                  profileData.lastName = e.target.value;
                   setErrorString("");
                 }}
               >
@@ -143,7 +142,7 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  setUsername(e.target.value);
+                  profileData.city = e.target.value;
                   setErrorString("");
                 }}
               >
@@ -158,7 +157,7 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  setUsername(e.target.value);
+                  profileData.county = e.target.value;
                   setErrorString("");
                 }}
               >
@@ -173,7 +172,7 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  setUsername(e.target.value);
+                  profileData.street = e.target.value;
                   setErrorString("");
                 }}
               >
@@ -193,9 +192,14 @@ function ProfileSetup(props: any) {
             <Modal.Body style={{ color: "red" }}>{errorString}</Modal.Body>
           ) : null}
           <Modal.Footer>
+            <Button variant="primary" onClick={handleClose}>
+              Close
+            </Button>
+            {!validationMessage.length ? (
             <Button variant="primary" onClick={handleSubmit}>
               Submit
             </Button>
+            ) : null }
           </Modal.Footer>
         </Modal>
       </div>

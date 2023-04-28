@@ -3,34 +3,27 @@ import { Container, Row, Button } from "react-bootstrap";
 import "./LandingPage.css";
 import SignUp from "../Modals/SignUp";
 import Login from "../Modals/Login";
-import ProfileSetup from "../Modals/ProfileSetup";
 
 const LandingPage = (props: any) => {
 
-  const [showProfileSetup, setShowProfileSetup] = useState(false);
-  const handleOpenProfileSetup = () => setShowProfileSetup(true);
-  const handleCloseProfileSetup = () => setShowProfileSetup(false);
-
   const [showSignup, setShowSignup] = useState(false);
   const handleOpenSignup = () => setShowSignup(true);
-  const handleCloseSignup = (message: string) => {
+  const handleCloseSignup = () => {
     setShowSignup(false);
-    if (message.length) {
-      setShowProfileSetup(true);
-    }
   };
 
   const [showLogin, setShowLogin] = useState(false);
   const handleOpenLogin = () => {
     setShowLogin(true);
   };
-  const handleCloseLogin = (token: string, roles: [string], user_name: string) => {
+  const handleCloseLogin = (token: string, roles: [string], user_name: string, id: any) => {
     setShowLogin(false);
     const userData = {
       userLogged: true,
       token: token,
       roles: roles,
-      username: user_name
+      username: user_name,
+      userId: id
     }
     props.handleAppCallback(userData);
   };
@@ -67,7 +60,6 @@ const LandingPage = (props: any) => {
       </Container>
       {showSignup ? <SignUp handleClose={handleCloseSignup} /> : null}
       {showLogin ? <Login handleClose={handleCloseLogin} /> : null}
-      {showProfileSetup ? <ProfileSetup /> : null}
     </div>
   );
 };

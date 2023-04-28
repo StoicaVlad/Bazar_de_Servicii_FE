@@ -22,9 +22,8 @@ function Login(props: any) {
     await axiosBaseURL
       .post("api/auth/signin", { username, password }, config)
       .then((response) => {
-        console.log(response);
         setValidationMessage(response.data.token);
-        props.handleClose(response.data.token, response.data.roles, response.data.username);
+        props.handleClose(response.data.token, response.data.roles, response.data.username, response.data.id.toString());
       })
       .catch(() => {
         setErrorString("Invalid username or password!")
