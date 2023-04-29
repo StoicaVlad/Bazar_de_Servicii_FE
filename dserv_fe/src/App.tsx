@@ -8,6 +8,7 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Services from "./pages/Services";
 import MyServices from "./pages/MyServices";
 import ProfileSetup from "./pages/Modals/ProfileSetup";
+import axiosBaseURL from "./components/HttpCommon";
 
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
     profileId: ""
   });
 
+  const [profileId, setProfileId] = useState('');
+ 
   const receiveAccountData = (data: any) => {
     console.log(data);
     setAccountData(data);
@@ -35,12 +38,28 @@ function App() {
     window.localStorage.setItem("userId", JSON.stringify(data.userId))
     const headerData = { roles: data.roles, username: data.username, profileId: ''};
     setHeaderInfo(headerData);
+
+    if(profileId === null) {
+      let config = {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+      };
+
+      axiosBaseURL.get("/api/profile?userId=" + data.userId, config)
+      .then((response) => {
+        setProfileId(response.data.toString());
+        window.localStorage.setItem("profileId", JSON.stringify(response.data.toString()));
+      })
+      .catch((error) => console.log(error));
+    }
   };
 
   const receiveProfileId = (data: any) => {
     console.log(data);
-    setHeaderInfo({roles: headerInfo.roles, username: headerInfo.username, profileId: data.toString()});
-    window.localStorage.setItem("profileId", JSON.stringify(data));
+    setProfileId(data.toString());
+    window.localStorage.setItem("profileId", JSON.stringify(data.toString()));
     console.log(headerInfo);
   }
 
@@ -49,7 +68,11 @@ function App() {
     const roles = JSON.parse(window.localStorage.getItem("roles")!);
     const username = JSON.parse(window.localStorage.getItem("username")!);
     const userId = JSON.parse(window.localStorage.getItem("userId")!);
+    const profileId = JSON.parse(window.localStorage.getItem("profileId")!);
+    setProfileId(profileId);
     console.log('token:' + token);
+    console.log(profileId);
+
     if (token !== null) {
       setAccountData({
         userLogged: token.length ? true : false,
@@ -61,7 +84,7 @@ function App() {
       setHeaderInfo({
         roles: roles,
         username: username,
-        profileId: ''
+        profileId: profileId
       });
     }
   }, []);
@@ -72,12 +95,12 @@ function App() {
       <main style={{ minHeight: "93vh" }}>
         {accountData.userLogged === true ? (
           <>
-          {!headerInfo.profileId.length ? <ProfileSetup {...accountData} handleProfileCallback={receiveProfileId}/> : null}
+          {(profileId === null || profileId === undefined) ? <ProfileSetup {...accountData} handleProfileCallback={receiveProfileId}/> : null}
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
-            <Route path={"/services/" + headerInfo.profileId} element={<MyServices />} />
+            <Route path={"/services/" + profileId} element={<MyServices />} />
           </Routes>
           </BrowserRouter>
           </>
