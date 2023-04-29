@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ServicesByUserTable from '../components/ProviderServices/ServicesByUserTable'
 import { Button } from 'react-bootstrap';
-import CreateService from './Modals/CreateService';
+import CreateService from './Modals/CreateServiceModal';
 
 const MyServices = (props: any) => {
 
