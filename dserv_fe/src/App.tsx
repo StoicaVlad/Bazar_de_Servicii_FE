@@ -34,7 +34,7 @@ function App() {
     console.log(accountData);
     window.localStorage.setItem("token", data.token);
     window.localStorage.setItem("roles", JSON.stringify(data.roles));
-    window.localStorage.setItem("username", JSON.stringify(data.roles));
+    window.localStorage.setItem("username", JSON.stringify(data.username));
     window.localStorage.setItem("userId", JSON.stringify(data.userId))
     const headerData = { roles: data.roles, username: data.username, profileId: ''};
     setHeaderInfo(headerData);
@@ -50,6 +50,7 @@ function App() {
       axiosBaseURL.get("/api/profile?userId=" + data.userId, config)
       .then((response) => {
         setProfileId(response.data.toString());
+        console.log(profileId);
         window.localStorage.setItem("profileId", JSON.stringify(response.data.toString()));
       })
       .catch((error) => console.log(error));
@@ -70,6 +71,9 @@ function App() {
     const userId = JSON.parse(window.localStorage.getItem("userId")!);
     const profileId = JSON.parse(window.localStorage.getItem("profileId")!);
     setProfileId(profileId);
+    if(profileId === null) {
+      receiveProfileId;
+    }
     console.log('token:' + token);
     console.log(profileId);
 
@@ -86,6 +90,8 @@ function App() {
         username: username,
         profileId: profileId
       });
+      console.log(username, roles);
+      console.log(headerInfo);
     }
   }, []);
 
@@ -95,12 +101,12 @@ function App() {
       <main style={{ minHeight: "93vh" }}>
         {accountData.userLogged === true ? (
           <>
-          {(profileId === null || profileId === undefined) ? <ProfileSetup {...accountData} handleProfileCallback={receiveProfileId}/> : null}
+          {(profileId === null || !profileId.length) ? <ProfileSetup {...accountData} handleProfileCallback={receiveProfileId}/> : null}
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
-            <Route path={"/services/" + profileId} element={<MyServices />} />
+            <Route path={"/services/" + profileId} element={<MyServices props={{profileId: profileId, token: accountData.token}}/>} />
           </Routes>
           </BrowserRouter>
           </>

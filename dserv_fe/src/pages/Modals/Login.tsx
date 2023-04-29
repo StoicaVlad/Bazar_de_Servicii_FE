@@ -35,7 +35,7 @@ function Login(props: any) {
       <title>Login</title>
       <div className="modal show">
         <Modal show={true} onHide={props.handleClose} centered>
-          <Modal.Header closeButton>
+          <Modal.Header>
             <Modal.Title>Enter your account credentials</Modal.Title>
           </Modal.Header>
           {!validationMessage.length ? (
@@ -73,9 +73,9 @@ function Login(props: any) {
             <Modal.Body style={{ color: "red" }}>{errorString}</Modal.Body>
           ) : null}
           <Modal.Footer>
-            <Button variant="secondary" onClick={props.handleClose}>
+            {/* <Button variant="secondary" onClick={props.handleClose}>
               Close
-            </Button>
+            </Button> */}
             {!validationMessage.length ? (
               <Button variant="primary" onClick={handleSubmit}>
                 Submit

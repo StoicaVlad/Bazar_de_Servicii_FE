@@ -4,23 +4,27 @@ import { useState } from "react";
 import "../../components/HttpCommon";
 import axiosBaseURL from "../../components/HttpCommon";
 
-function ProfileSetup(props: any) {
+function CreateService(props: any) {
   const [errorString, setErrorString] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
+  console.log(props);
 
-  const [profileData] = useState({
-    firsName: "",
-    lastName: "",
-    emailAddress: "",
-    phoneNumber: "",
-    city: "",
-    county: "",
-    street: "",
-    userId: -1,
+  const [serviceData] = useState({
+    title: "",
+    description: "",
+    price: 0,
+    noWorkers: 0,
+    durationTimeHours: 0,
+    currency: "",
+    category: "",
+    ownerId: props.props.props.profileId,
   });
 
   const handleClose = () => {
-    props.handleProfileCallback(validationMessage);
+    props.handleClose();
+    if (validationMessage.length) {
+      window.location.reload();
+    }
   };
 
   const handleSubmit = async (e: any) => {
@@ -28,29 +32,29 @@ function ProfileSetup(props: any) {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json;charset=UTF-8",
-        Authorization: "Bearer " + props.token,
+        Authorization: "Bearer " + props.props.props.token,
       },
     };
 
     e.preventDefault();
-    profileData.userId = props.userId;
+    serviceData.ownerId = props.props.props.profileId;
     await axiosBaseURL
       .post(
-        "api/profile/createProfile",
+        "api/services/create",
         {
-            userId: profileData.userId,
-            emailAddress: profileData.emailAddress,
-            phoneNumber: profileData.phoneNumber,
-            firstName: profileData.firsName,
-            lastName: profileData.lastName,
-            city: profileData.city,
-            county: profileData.county,
-            street: profileData.street
+          ownerId: serviceData.ownerId,
+          title: serviceData.title,
+          description: serviceData.description,
+          price: serviceData.price,
+          currency: serviceData.currency,
+          category: serviceData.category,
+          durationTimeHours: serviceData.durationTimeHours,
+          noWorkers: serviceData.noWorkers,
         },
         config
       )
       .then((response) => {
-        if(!validationMessage.length || !response.data.includes(' ')) {
+        if (!validationMessage.length || !response.data.includes(" ")) {
           setValidationMessage(response.data);
         }
         console.log(validationMessage);
@@ -68,15 +72,15 @@ function ProfileSetup(props: any) {
 
   return (
     <>
-      <title>Profile Creation</title>
+      <title>Provide a new service</title>
       <div className="modal show">
         <Modal show={true} onHide={props.handleClose} centered size="lg">
           <Modal.Header>
-            <Modal.Title>Create your profile</Modal.Title>
+            <Modal.Title>Provide a new service</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Complete the fields below to finish creating your profile. Do not
-            worry, you can edit them later!
+            Complete the fields below to add a new service. Do not worry, you
+            can edit them later!
           </Modal.Body>
           {!validationMessage.length ? (
             <Form>
@@ -84,32 +88,14 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.emailAddress = e.target.value;
+                  serviceData.title = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>Email address</Form.Label>
+                <Form.Label>Title</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter your email address"
-                />
-                <Form.Text className="text-muted">
-                  This email address will be linked to your account.
-                </Form.Text>
-              </Form.Group>
-
-              <Form.Group
-                controlId="formBasicEmail"
-                style={{ padding: "15px" }}
-                onChange={(e: any) => {
-                  profileData.phoneNumber = e.target.value;
-                  setErrorString("");
-                }}
-              >
-                <Form.Label>Phone Number</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter your phone number"
+                  placeholder="Enter a title for your service"
                 />
               </Form.Group>
 
@@ -117,14 +103,14 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.firsName = e.target.value;
+                  serviceData.description = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>First Name</Form.Label>
+                <Form.Label>Description</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter your first name"
+                  placeholder="Enter a description for your service"
                 />
               </Form.Group>
 
@@ -132,26 +118,44 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.lastName = e.target.value;
+                  serviceData.category = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control type="email" placeholder="Enter your last name" />
+                <Form.Label>Category</Form.Label>
+                <Form.Select>
+                  <option>Choose your service's category</option>
+                  <option value={"HOME"}>Home and housekeeping related</option>
+                  <option value={"CONSTRUCTIONS"}>Constructions related</option>
+                  <option value={"ELECTRONICS"}>Electronics related</option>
+                  <option value={"VEHICLES"}>Vehicles related</option>
+                </Form.Select>
               </Form.Group>
 
               <Form.Group
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.city = e.target.value;
+                  serviceData.noWorkers = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>City</Form.Label>
+                <Form.Label>Number of workers required</Form.Label>
+                <Form.Control type="email" placeholder="Enter the minimum number of workers required for this service" />
+              </Form.Group>
+
+              <Form.Group
+                controlId="formBasicEmail"
+                style={{ padding: "15px" }}
+                onChange={(e: any) => {
+                  serviceData.durationTimeHours = e.target.value;
+                  setErrorString("");
+                }}
+              >
+                <Form.Label>Minimum duration time in hours</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter the city you live in"
+                  placeholder="Enter the minimum duration of your service ( in hours )"
                 />
               </Form.Group>
 
@@ -159,14 +163,14 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.county = e.target.value;
+                  serviceData.price = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>County/Area</Form.Label>
+                <Form.Label>Price per hour</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter the county or area from a city you live in"
+                  placeholder="Enter the price a client will pay ( per hour )"
                 />
               </Form.Group>
 
@@ -174,20 +178,25 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.street = e.target.value;
+                  serviceData.currency = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter your address ( Street and number )"
-                />
+                <Form.Label>Currency</Form.Label>
+                <Form.Select>
+                  <option>Choose your service's currency</option>
+                  <option value={"RON"}>Lei</option>
+                  <option value={"EUR"}>Euro</option>
+                  <option value={"USD"}>Dolari</option>
+                  <option value={"GBP"}>Lire</option>
+                </Form.Select>
               </Form.Group>
             </Form>
           ) : (
             <Modal.Body style={{ color: "green" }}>
-              {validationMessage.length ? 'Profile was created successfully!' : null}
+              {validationMessage.length
+                ? "Service was created successfully"
+                : null}
             </Modal.Body>
           )}
           {errorString.length ? (
@@ -198,10 +207,10 @@ function ProfileSetup(props: any) {
               Close
             </Button>
             {!validationMessage.length ? (
-            <Button variant="primary" onClick={handleSubmit}>
-              Submit
-            </Button>
-            ) : null }
+              <Button variant="primary" onClick={handleSubmit}>
+                Submit
+              </Button>
+            ) : null}
           </Modal.Footer>
         </Modal>
       </div>
@@ -209,4 +218,4 @@ function ProfileSetup(props: any) {
   );
 }
 
-export default ProfileSetup;
+export default CreateService;

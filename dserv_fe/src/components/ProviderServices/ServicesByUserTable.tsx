@@ -11,7 +11,7 @@ let config = {
   },
 };
 
-const ServicesByUserTable = () => {
+const ServicesByUserTable = (props: any) => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [tablePageData, setTablePageData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -21,8 +21,9 @@ const ServicesByUserTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    console.log(props);
     axiosBaseURL
-      .get("api/services/show", config)
+      .get("api/services/showByUser?profileId=" + props.props.profileId, config)
       .then((response) => {
         setTableData(response?.data);
         setTablePageData(response?.data.slice(0, pageSize));
@@ -89,9 +90,11 @@ const ServicesByUserTable = () => {
     .map((item, index) => (
       <tr key={index}>
         <td>{item.title}</td>
+        <td>{item.description}</td>
         <td>{item.category}</td>
-        <td>{item.owner}</td>
         <td>{item.price + " " + item.currency}</td>
+        <td>{item.noWorkers}</td>
+        <td>{item.durationTimeHours}</td>
       </tr>
     ));
   return (
@@ -111,9 +114,12 @@ const ServicesByUserTable = () => {
           <thead>
             <tr>
               <th>Title</th>
+              <th>Description</th>
               <th>Category</th>
               <th>Owner</th>
-              <th>Price</th>
+              <th>Price per hour</th>
+              <th>Workers required</th>
+              <th>Minimum hours required</th>
             </tr>
           </thead>
           <tbody>{tableDataSearchFilter}</tbody>

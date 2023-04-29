@@ -5,7 +5,6 @@ import SignUp from "../Modals/SignUp";
 import Login from "../Modals/Login";
 
 const LandingPage = (props: any) => {
-
   const [showSignup, setShowSignup] = useState(false);
   const handleOpenSignup = () => setShowSignup(true);
   const handleCloseSignup = () => {
@@ -16,16 +15,23 @@ const LandingPage = (props: any) => {
   const handleOpenLogin = () => {
     setShowLogin(true);
   };
-  const handleCloseLogin = (token: string, roles: [string], user_name: string, id: any) => {
-    setShowLogin(false);
-    const userData = {
-      userLogged: true,
-      token: token,
-      roles: roles,
-      username: user_name,
-      userId: id
+  const handleCloseLogin = (
+    token: string,
+    roles: [string],
+    user_name: string,
+    id: any
+  ) => {
+    if (token != null) {
+      setShowLogin(false);
+      const userData = {
+        userLogged: true,
+        token: token,
+        roles: roles,
+        username: user_name,
+        userId: id,
+      };
+      props.handleAppCallback(userData);
     }
-    props.handleAppCallback(userData);
   };
 
   return (
