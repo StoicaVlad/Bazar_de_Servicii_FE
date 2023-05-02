@@ -13,6 +13,11 @@ const Header = (userData: {roles: string[], username: string, profileId: string}
     }
   }, []);
 
+  const handleLogout = () => {
+    window.localStorage.clear();
+    window.location.reload();
+  }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
@@ -40,7 +45,7 @@ const Header = (userData: {roles: string[], username: string, profileId: string}
               </NavDropdown.Item> : null }
               <NavDropdown.Item href="/profile">Profil</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">Logout</NavDropdown.Item>
+              <NavDropdown.Item href="#action5" onClick={handleLogout}>Logout</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

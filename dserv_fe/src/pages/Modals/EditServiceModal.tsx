@@ -10,14 +10,13 @@ function EditServiceModal(props: any) {
   console.log(props);
 
   const [serviceData] = useState({
-    title: "",
-    description: "",
-    price: 0,
-    noWorkers: 0,
-    durationTimeHours: 0,
-    currency: "",
-    category: "",
-    ownerId: props.props.props.profileId,
+    title: props.props.item.title,
+    description: props.props.item.description,
+    price: props.props.item.price,
+    noWorkers: props.props.item.noWorkers,
+    durationTimeHours: props.props.item.duration,
+    currency: props.props.item.currency,
+    serviceId: props.props.item.id
   });
 
   const handleClose = () => {
@@ -32,24 +31,22 @@ function EditServiceModal(props: any) {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json;charset=UTF-8",
-        Authorization: "Bearer " + props.props.props.token,
+        Authorization: "Bearer " + props.props.token,
       },
     };
 
     e.preventDefault();
-    serviceData.ownerId = props.props.props.profileId;
     await axiosBaseURL
-      .post(
-        "api/services/create",
+      .put(
+        "api/services/update",
         {
-          ownerId: serviceData.ownerId,
           title: serviceData.title,
           description: serviceData.description,
           price: serviceData.price,
           currency: serviceData.currency,
-          category: serviceData.category,
           durationTimeHours: serviceData.durationTimeHours,
           noWorkers: serviceData.noWorkers,
+          serviceId: serviceData.serviceId
         },
         config
       )
@@ -79,7 +76,8 @@ function EditServiceModal(props: any) {
             <Modal.Title>Edit your service</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Edit your service data. This will also affect your current reservations!
+            Edit your service data. This will also affect your current
+            reservations!
           </Modal.Body>
           {!validationMessage.length ? (
             <Form>
@@ -95,6 +93,7 @@ function EditServiceModal(props: any) {
                 <Form.Control
                   type="email"
                   placeholder="Enter a title for your service"
+                  defaultValue={props.props.item.title}
                 />
               </Form.Group>
 
@@ -110,25 +109,8 @@ function EditServiceModal(props: any) {
                 <Form.Control
                   type="email"
                   placeholder="Enter a description for your service"
+                  defaultValue={props.props.item.description}
                 />
-              </Form.Group>
-
-              <Form.Group
-                controlId="formBasicEmail"
-                style={{ padding: "15px" }}
-                onChange={(e: any) => {
-                  serviceData.category = e.target.value;
-                  setErrorString("");
-                }}
-              >
-                <Form.Label>Category</Form.Label>
-                <Form.Select>
-                  <option>Choose your service's category</option>
-                  <option value={"HOME"}>Home and housekeeping related</option>
-                  <option value={"CONSTRUCTIONS"}>Constructions related</option>
-                  <option value={"ELECTRONICS"}>Electronics related</option>
-                  <option value={"VEHICLES"}>Vehicles related</option>
-                </Form.Select>
               </Form.Group>
 
               <Form.Group
@@ -140,7 +122,11 @@ function EditServiceModal(props: any) {
                 }}
               >
                 <Form.Label>Number of workers required</Form.Label>
-                <Form.Control type="email" placeholder="Enter the minimum number of workers required for this service" />
+                <Form.Control
+                  type="email"
+                  placeholder="Enter the minimum number of workers required for this service"
+                  defaultValue={props.props.item.noWorkers}
+                />
               </Form.Group>
 
               <Form.Group
@@ -155,6 +141,7 @@ function EditServiceModal(props: any) {
                 <Form.Control
                   type="email"
                   placeholder="Enter the minimum duration of your service ( in hours )"
+                  defaultValue={props.props.item.duration}
                 />
               </Form.Group>
 
@@ -170,6 +157,7 @@ function EditServiceModal(props: any) {
                 <Form.Control
                   type="email"
                   placeholder="Enter the price a client will pay ( per hour )"
+                  defaultValue={props.props.item.price}
                 />
               </Form.Group>
 
@@ -194,7 +182,7 @@ function EditServiceModal(props: any) {
           ) : (
             <Modal.Body style={{ color: "green" }}>
               {validationMessage.length
-                ? "Service was created successfully"
+                ? "Service was updated successfully!"
                 : null}
             </Modal.Body>
           )}

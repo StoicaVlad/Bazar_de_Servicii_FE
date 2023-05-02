@@ -4,6 +4,7 @@ import axiosBaseURL from "../HttpCommon";
 import "../../style.css";
 import { InputGroup, Form, Pagination, Button } from "react-bootstrap";
 import EditServiceModal from "../../pages/Modals/EditServiceModal";
+import DeleteConfirmModal from "../../pages/Modals/DeleteConfirmModal";
 
 let config = {
   headers: {
@@ -21,9 +22,27 @@ const ServicesByUserTable = (props: any) => {
   const [pageNumbers, setPageNumbers] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
+
+  const [deleteItem, setDeleteItem] = useState<any>();
+  const [editItem, setEditItem] = useState<any>();
+
   const [showEditModal, setShowEditModal] = useState(false);
-  const handleCloseEditModal = () => {setShowEditModal(false)};
-  const handleOpenEditModal = () => {setShowEditModal(true)};
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+  };
+  const handleOpenEditModal = (item: any) => {
+    setShowEditModal(true);
+    setEditItem(item);
+  };
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+  const handleOpenDeleteModal = (item: any) => {
+    setShowDeleteModal(true);
+    setDeleteItem(item);
+  };
 
   useEffect(() => {
     console.log(props);
@@ -102,15 +121,31 @@ const ServicesByUserTable = (props: any) => {
         <td>{item.noWorkers}</td>
         <td>{item.duration}</td>
         <td>
-          <Button style={{ margin: "5px" }} onClick={handleOpenEditModal}>Edit</Button>{" "}
-          <Button style={{ margin: "5px" }}>Delete</Button>
+          <Button style={{ margin: "5px" }} onClick={() => handleOpenEditModal(item)}>
+            Edit
+          </Button>{" "}
+          <Button style={{ margin: "5px" }} onClick={() => handleOpenDeleteModal(item)}>
+            Delete
+          </Button>
         </td>
       </tr>
     ));
   return (
     <>
       <div>
-      {showEditModal ? <EditServiceModal props={props} handleClose={handleCloseEditModal}/> : null}
+        {showEditModal ? (
+          <EditServiceModal props={{item: editItem, token: props.props.token}} handleClose={handleCloseEditModal} />
+        ) : null}
+        {showDeleteModal ? (
+          <DeleteConfirmModal
+            props={{
+              item: deleteItem,
+              url: "api/services/delete?id=",
+              token: props.props.token,
+            }}
+            handleClose={handleCloseDeleteModal}
+          />
+        ) : null}
       </div>
       <div>
         <Form>
