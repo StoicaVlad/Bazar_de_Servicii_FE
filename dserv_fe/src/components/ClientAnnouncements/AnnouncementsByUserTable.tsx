@@ -3,7 +3,7 @@ import Table from "react-bootstrap/Table";
 import axiosBaseURL from "../HttpCommon";
 import "../../style.css";
 import { InputGroup, Form, Pagination, Button } from "react-bootstrap";
-import EditServiceModal from "../../pages/Modals/EditServiceModal";
+import EditAnnouncementModal from "../../pages/Modals/EditAnnouncementModal";
 import DeleteConfirmModal from "../../pages/Modals/DeleteConfirmModal";
 
 let config = {
@@ -13,7 +13,7 @@ let config = {
   },
 };
 
-const ServicesByUserTable = (props: any) => {
+const AnnouncementsByUserTable = (props: any) => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [tablePageData, setTablePageData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -46,7 +46,7 @@ const ServicesByUserTable = (props: any) => {
 
   useEffect(() => {
     axiosBaseURL
-      .get("api/services/showByUser?profileId=" + props.props.profileId, config)
+      .get("api/announcement/showByUser?userProfile=" + props.props.profileId, config)
       .then((response) => {
         setTableData(response?.data);
         setTablePageData(response?.data.slice(0, pageSize));
@@ -116,7 +116,7 @@ const ServicesByUserTable = (props: any) => {
         <td>{item.title}</td>
         <td>{item.description}</td>
         <td>{item.category}</td>
-        <td>{item.price + " " + item.currency}</td>
+        <td>{item.price + " " + (item.currency != null ? item.currency : '')}</td>
         <td>{item.noWorkers}</td>
         <td>{item.duration}</td>
         <td>
@@ -133,13 +133,13 @@ const ServicesByUserTable = (props: any) => {
     <>
       <div>
         {showEditModal ? (
-          <EditServiceModal props={{item: editItem, token: props.props.token}} handleClose={handleCloseEditModal} />
+          <EditAnnouncementModal props={{item: editItem, token: props.props.token}} handleClose={handleCloseEditModal} />
         ) : null}
         {showDeleteModal ? (
           <DeleteConfirmModal
             props={{
               item: deleteItem,
-              url: "api/services/delete?id=",
+              url: "api/announcement/delete?id=",
               token: props.props.token,
             }}
             handleClose={handleCloseDeleteModal}
@@ -163,9 +163,9 @@ const ServicesByUserTable = (props: any) => {
               <th>Title</th>
               <th>Description</th>
               <th>Category</th>
-              <th>Price per hour</th>
-              <th>Workers required</th>
-              <th>Minimum hours required</th>
+              <th>Maximum price offering for service</th>
+              <th>Required workers number</th>
+              <th>Approximate durataion time</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -199,4 +199,4 @@ const ServicesByUserTable = (props: any) => {
   );
 };
 
-export default ServicesByUserTable;
+export default AnnouncementsByUserTable;

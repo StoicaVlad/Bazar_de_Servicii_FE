@@ -7,7 +7,6 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 const Header = (userData: {roles: string[], username: string, profileId: string}) => {
 
   useEffect(() => {
-    console.log(userData);
     if(userData.profileId === null) {
       window.location.reload();
     }
@@ -36,7 +35,7 @@ const Header = (userData: {roles: string[], username: string, profileId: string}
             <Nav.Link href="/announcements">Anunturi</Nav.Link>
             <NavDropdown title={userData.username} id="navbarScrollingDropdown">
               { userData.roles.includes("ROLE_CLIENT") ?
-              <NavDropdown.Item href="#action3">
+              <NavDropdown.Item href={"/announcements/" + userData.profileId}>
                 Anunturile mele
               </NavDropdown.Item> : null }
               { userData.roles.includes("ROLE_PROVIDER") ?
@@ -45,7 +44,7 @@ const Header = (userData: {roles: string[], username: string, profileId: string}
               </NavDropdown.Item> : null }
               <NavDropdown.Item href="/profile">Profil</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5" onClick={handleLogout}>Logout</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

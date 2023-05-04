@@ -11,13 +11,13 @@ let config = {
   },
 };
 
-const Services = () => {
+const Announcements = () => {
 
   const [serviceData, setServiceData] = useState<any[]>([]);
 
   useEffect(() => {
     axiosBaseURL
-      .get("api/services/show", config)
+      .get("api/announcement/show", config)
       .then((response: any) => {
         setServiceData(response.data);
       })
@@ -29,14 +29,14 @@ const Services = () => {
 
   return (
     <>
-      <h1 style={{margin: '30px'}}>Available services</h1>
+      <h1 style={{margin: '30px'}}>Check the newest announcements</h1>
       <Row className="main-content">{
         serviceData.map((item, index) => (
-                <ServiceCard props={item} key={index}></ServiceCard>
+                <ServiceCard props={item}></ServiceCard>
         ))
         }</Row>
     </>
   );
 };
 
-export default Services;
+export default Announcements;

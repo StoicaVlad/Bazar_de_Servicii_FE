@@ -4,23 +4,25 @@ import { useState } from "react";
 import "../../components/HttpCommon";
 import axiosBaseURL from "../../components/HttpCommon";
 
-function ProfileSetup(props: any) {
+function EditServiceModal(props: any) {
   const [errorString, setErrorString] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
 
-  const [profileData] = useState({
-    firsName: "",
-    lastName: "",
-    emailAddress: "",
-    phoneNumber: "",
-    city: "",
-    county: "",
-    street: "",
-    userId: -1,
+  const [announcementData] = useState({
+    title: props.props.item.title,
+    description: props.props.item.description,
+    price: props.props.item.price,
+    noWorkers: props.props.item.noWorkers,
+    duration: props.props.item.durationTimeHours,
+    currency: props.props.item.currency,
+    announcementId: props.props.item.id
   });
 
   const handleClose = () => {
-    props.handleProfileCallback(validationMessage);
+    props.handleClose();
+    if (validationMessage.length) {
+      window.location.reload();
+    }
   };
 
   const handleSubmit = async (e: any) => {
@@ -28,29 +30,26 @@ function ProfileSetup(props: any) {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json;charset=UTF-8",
-        Authorization: "Bearer " + props.token,
+        Authorization: "Bearer " + props.props.token,
       },
     };
 
     e.preventDefault();
-    profileData.userId = props.userId;
     await axiosBaseURL
-      .post(
-        "api/profile/createProfile",
+      .put(
+        "api/announcement/update",
         {
-            userId: profileData.userId,
-            emailAddress: profileData.emailAddress,
-            phoneNumber: profileData.phoneNumber,
-            firstName: profileData.firsName,
-            lastName: profileData.lastName,
-            city: profileData.city,
-            county: profileData.county,
-            street: profileData.street
+          title: announcementData.title,
+          description: announcementData.description,
+          priceOffering: announcementData.price,
+          durationTimeHours: announcementData.duration,
+          requiredPeopleNumber: announcementData.noWorkers,
+          announcementId: announcementData.announcementId
         },
         config
       )
       .then((response) => {
-        if(!validationMessage.length || !response.data.includes(' ')) {
+        if (!validationMessage.length || !response.data.includes(" ")) {
           setValidationMessage(response.data);
         }
       })
@@ -67,15 +66,14 @@ function ProfileSetup(props: any) {
 
   return (
     <>
-      <title>Profile Creation</title>
+      <title>Edit your service</title>
       <div className="modal show">
         <Modal show={true} onHide={props.handleClose} centered size="lg">
           <Modal.Header>
-            <Modal.Title>Create your profile</Modal.Title>
+            <Modal.Title>Changed your mind?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Complete the fields below to finish creating your profile. Do not
-            worry, you can edit them later!
+            Edit your announcement data. It is recommended to let the providers you talked with know about these changes!
           </Modal.Body>
           {!validationMessage.length ? (
             <Form>
@@ -83,32 +81,15 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.emailAddress = e.target.value;
+                  announcementData.title = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>Email address</Form.Label>
+                <Form.Label>Title</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter your email address"
-                />
-                <Form.Text className="text-muted">
-                  This email address will be linked to your account.
-                </Form.Text>
-              </Form.Group>
-
-              <Form.Group
-                controlId="formBasicEmail"
-                style={{ padding: "15px" }}
-                onChange={(e: any) => {
-                  profileData.phoneNumber = e.target.value;
-                  setErrorString("");
-                }}
-              >
-                <Form.Label>Phone Number</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter your phone number"
+                  placeholder="Enter a title for your announcement"
+                  defaultValue={props.props.item.title}
                 />
               </Form.Group>
 
@@ -116,14 +97,15 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.firsName = e.target.value;
+                  announcementData.description = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>First Name</Form.Label>
+                <Form.Label>Description</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter your first name"
+                  placeholder="Enter a description for your announceemnt"
+                  defaultValue={props.props.item.description}
                 />
               </Form.Group>
 
@@ -131,26 +113,15 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.lastName = e.target.value;
+                  announcementData.noWorkers = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control type="email" placeholder="Enter your last name" />
-              </Form.Group>
-
-              <Form.Group
-                controlId="formBasicEmail"
-                style={{ padding: "15px" }}
-                onChange={(e: any) => {
-                  profileData.city = e.target.value;
-                  setErrorString("");
-                }}
-              >
-                <Form.Label>City</Form.Label>
+                <Form.Label>Number of workers required</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter the city you live in"
+                  placeholder="Enter the minimum number of workers required for this task"
+                  defaultValue={props.props.item.noWorkers}
                 />
               </Form.Group>
 
@@ -158,14 +129,15 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.county = e.target.value;
+                  announcementData.duration = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>County/Area</Form.Label>
+                <Form.Label>Minimum duration time in hours</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter the county or area from a city you live in"
+                  placeholder="Enter the minimum duration of your task ( in hours )"
+                  defaultValue={props.props.item.duration}
                 />
               </Form.Group>
 
@@ -173,20 +145,23 @@ function ProfileSetup(props: any) {
                 controlId="formBasicEmail"
                 style={{ padding: "15px" }}
                 onChange={(e: any) => {
-                  profileData.street = e.target.value;
+                  announcementData.price = e.target.value;
                   setErrorString("");
                 }}
               >
-                <Form.Label>Address</Form.Label>
+                <Form.Label>Maximum price offering</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter your address ( Street and number )"
+                  placeholder="Enter the price you will pay a provider"
+                  defaultValue={props.props.item.price}
                 />
               </Form.Group>
             </Form>
           ) : (
             <Modal.Body style={{ color: "green" }}>
-              {validationMessage.length ? 'Profile was created successfully!' : null}
+              {validationMessage.length
+                ? "Announcement was updated successfully!"
+                : null}
             </Modal.Body>
           )}
           {errorString.length ? (
@@ -197,10 +172,10 @@ function ProfileSetup(props: any) {
               Close
             </Button>
             {!validationMessage.length ? (
-            <Button variant="primary" onClick={handleSubmit}>
-              Submit
-            </Button>
-            ) : null }
+              <Button variant="primary" onClick={handleSubmit}>
+                Submit
+              </Button>
+            ) : null}
           </Modal.Footer>
         </Modal>
       </div>
@@ -208,4 +183,4 @@ function ProfileSetup(props: any) {
   );
 }
 
-export default ProfileSetup;
+export default EditServiceModal;

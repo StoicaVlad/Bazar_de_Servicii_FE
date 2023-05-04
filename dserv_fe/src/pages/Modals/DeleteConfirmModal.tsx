@@ -6,7 +6,6 @@ import axiosBaseURL from "../../components/HttpCommon";
 
 // props: object, url, token, handleclose
 function DeleteConfirmModal(props: any) {
-  console.log(props);
 
   const handleSubmit = async (e: any) => {
 
