@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosBaseURL from "../components/HttpCommon";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 
 const ProfilePage = (props: any) => {
