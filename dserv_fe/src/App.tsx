@@ -118,7 +118,7 @@ function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/announcements" element={<Announcements />} />
                 <Route
-                  path="/profile"
+                  path={"/profile/:profileId"}
                   element={
                     <ProfilePage
                       props={{ profileId: profileId, token: accountData.token }}

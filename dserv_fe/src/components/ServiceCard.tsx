@@ -3,6 +3,7 @@ import { useState } from "react";
 
 
 const ServiceCard = (serviceInfo: any) => {
+  console.log(serviceInfo);
 
   const [showDetails, setShowDetails] = useState(false);
   const handleDetailsButtonClicked = () => {
@@ -16,8 +17,10 @@ const ServiceCard = (serviceInfo: any) => {
     window.location.href = url;
   };
 
-  const goToUserProfile = () => {
-    redirect("/profile");
+  const goToUserReviews = () => {
+    let url = "/profile/" + serviceInfo.props.ownerProfileId;
+    console.log(url);
+    redirect(url);
   }
 
   return (
@@ -55,7 +58,7 @@ const ServiceCard = (serviceInfo: any) => {
           </ul> : null }
           <div>
           <Button variant="info" onClick={handleDetailsButtonClicked} style={{marginRight:'5px'}}>{!showDetails ? 'Details' : 'Hide'}</Button>
-          <Button variant="info" onClick={goToUserProfile}>Go to owner's profile</Button>
+          <Button variant="info" onClick={goToUserReviews}>Go to owner's profile</Button>
           </div>
         </Card.Body>
       </Card>

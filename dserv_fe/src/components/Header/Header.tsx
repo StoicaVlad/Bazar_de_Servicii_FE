@@ -42,7 +42,7 @@ const Header = (userData: {roles: string[], username: string, profileId: string}
               <NavDropdown.Item href={"/services/" + userData.profileId}>
                 Serviciile mele
               </NavDropdown.Item> : null }
-              <NavDropdown.Item href="/profile">Profil</NavDropdown.Item>
+              <NavDropdown.Item href={"/profile/" + userData.profileId}>Profil</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
             </NavDropdown>
