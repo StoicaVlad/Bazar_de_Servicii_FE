@@ -40,11 +40,12 @@ const LandingPage = (props: any) => {
         <Row>
           <div className="intro-text">
             <div>
-              <h1 className="title">Bun venit la Bazarul de Servicii</h1>
-              <p className="subtitle">Orice serviciu, la un click distanta</p>
+              <h1 className="title">Welcome to Services Market</h1>
+              <p className="subtitle">Anything you need, just one click away</p>
             </div>
             <div className="button-container">
               <Button
+                style={{marginRight: '10px'}}
                 size="lg"
                 className="landing-button"
                 variant="info"
