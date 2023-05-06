@@ -93,7 +93,7 @@ function CreateAnnouncement(props: any) {
                 <Form.Label>Title</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter a title for your service"
+                  placeholder="Enter a title for your post"
                 />
               </Form.Group>
 
@@ -108,7 +108,7 @@ function CreateAnnouncement(props: any) {
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter a description for your service"
+                  placeholder="Enter a description for your post"
                 />
               </Form.Group>
 

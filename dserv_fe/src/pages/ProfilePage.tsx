@@ -3,9 +3,9 @@ import axiosBaseURL from "../components/HttpCommon";
 import "../profile_style.css";
 import { useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
+import CreateReview from "./Modals/CreateReviewModal";
 
 const ProfilePage = (props: any) => {
-  console.log(props);
   let { profileId } = useParams();
 
   const [profileData, setProfileData] = useState({
@@ -19,6 +19,8 @@ const ProfilePage = (props: any) => {
 
   const [reviewsData, setReviewsData] = useState<any[]>([]);
   const [showReviews, setShowReviews] = useState(false);
+  const [showCreateReviewModal, setShowCreateReviewModal] = useState(false);
+  const handleCloseModal = () => {setShowCreateReviewModal(false)};
 
   let config = {
     headers: {
@@ -32,7 +34,6 @@ const ProfilePage = (props: any) => {
     axiosBaseURL
       .get("api/profile/getProfileInfo?profileId=" + profileId, config)
       .then((response: any) => {
-        console.log(response.data);
         profileData.firstName = response.data.firstName;
         profileData.lastName = response.data.lastName;
         profileData.emailAddress = response.data.emailAddress;
@@ -47,7 +48,6 @@ const ProfilePage = (props: any) => {
           userScore: response.data.userScore,
           phoneNumber: response.data.phoneNumber,
         });
-        console.log(profileData);
       })
       .catch((error) => {
         console.log(error);
@@ -57,7 +57,6 @@ const ProfilePage = (props: any) => {
     axiosBaseURL
       .get("api/review/showReviews?userId=" + profileId, config)
       .then((response: any) => {
-        console.log(response);
         setReviewsData(response.data);
       })
       .catch((error) => {
@@ -71,6 +70,7 @@ const ProfilePage = (props: any) => {
 
   return (
     <>
+    {showCreateReviewModal ? <CreateReview props={{token: props.props.token, userId: profileId}} handleClose={handleCloseModal}/> : null}
       <div className="container">
         <div className="main-body">
           <div className="row gutters-sm">
@@ -87,7 +87,10 @@ const ProfilePage = (props: any) => {
                     <div className="mt-3">
                       <h4>{profileData.firstName}</h4>
                       <p className="text-secondary mb-1">
-                        {"User score: " + (profileData.userScore.toString() !== 'NaN' ? profileData.userScore.toFixed(2) : profileData.userScore)}
+                        {"User score: " +
+                          (profileData.userScore.toString() !== "NaN"
+                            ? profileData.userScore.toFixed(2)
+                            : profileData.userScore)}
                       </p>
                       <p className="text-muted font-size-sm">
                         {profileData.address}
@@ -136,7 +139,7 @@ const ProfilePage = (props: any) => {
                     </div>
                   </div>
                   <hr></hr>
-                    <div className="row">
+                  <div className="row">
                     {profileId === props.props.profileId ? (
                       <div className="col-sm-12">
                         <a
@@ -146,81 +149,101 @@ const ProfilePage = (props: any) => {
                         >
                           Edit
                         </a>
-                      </div> ) : null}
-                      {reviewsData.length ? 
+                      </div>
+                    ) : null}
+
+                    <div className="col-sm-12 mb-2">
+                      <a
+                        className="btn btn-info "
+                        target="__blank"
+                        onClick={() => {
+                          setShowCreateReviewModal(true);
+                        }}
+                      >
+                        Add a review
+                      </a>
+                    </div>
+
+                    {reviewsData.length ? (
                       <div className="col-sm-12">
                         <a
                           className="btn btn-info "
                           target="__blank"
-                          onClick={() => {showReviews ? setShowReviews(false) : setShowReviews(true)}}
+                          onClick={() => {
+                            showReviews
+                              ? setShowReviews(false)
+                              : setShowReviews(true);
+                          }}
                         >
-                          {showReviews ? 'Hide reviews' : 'Show reviews'}
+                          {showReviews ? "Hide reviews" : "Show reviews"}
                         </a>
-                      </div> : <div>This user has 0 reviews</div>}
-                    </div>
+                      </div>
+                    ) : (
+                      <div>This user has 0 reviews</div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              { showReviews ?
-              <div className="row gutters-sm">
-                <div className="col-sm-12 mb-3">
-                  <div className="card h-100">
-                    <div className="card-body">
-                      <h4 className="d-flex align-items-center mb-3">
-                        Reviews
-                      </h4>
-                      <h5>
-                        User Score: {profileData.userScore.toFixed(2)}
-                      </h5>
-                      <div>
-                        {reviewsData.map((review, index) => (
-                          <Card
-                            className={
-                              review.score <= 2.0
-                                ? "card-bad"
-                                : review.score > 2 && review.score < 4
-                                ? "card-middle"
-                                : "card-good"
-                            }
-                            key={index}
-                            bg={
-                              review.score <= 2.0
-                                ? "danger"
-                                : review.score > 2 && review.score < 4
-                                ? "warning"
-                                : "success"
-                            }
-                          >
-                            <Card.Header>
-                              <h5>
-                                {review.score <= 2.0
-                                  ? "Unsatisfied"
-                                  : review.score > 2 && review.score < 4
-                                  ? "Impartial"
-                                  : "Satisfied"}
-                              </h5>
-                            </Card.Header>
-                            <Card.Body
-                              style={
+              {showReviews ? (
+                <div className="row gutters-sm">
+                  <div className="col-sm-12 mb-3">
+                    <div className="card h-100">
+                      <div className="card-body">
+                        <h4 className="d-flex align-items-center mb-3">
+                          Reviews
+                        </h4>
+                        <h5>User Score: {profileData.userScore.toFixed(2)}</h5>
+                        <div>
+                          {reviewsData.map((review, index) => (
+                            <Card
+                              className={
                                 review.score <= 2.0
-                                  ? { backgroundColor: "#FFCCCC" }
+                                  ? "card-bad"
                                   : review.score > 2 && review.score < 4
-                                  ? { backgroundColor: "#FFFFCC" }
-                                  : { backgroundColor: "#CCFFCC" }
+                                  ? "card-middle"
+                                  : "card-good"
+                              }
+                              key={index}
+                              bg={
+                                review.score <= 2.0
+                                  ? "danger"
+                                  : review.score > 2 && review.score < 4
+                                  ? "warning"
+                                  : "success"
                               }
                             >
-                              <Card.Title>
-                                <b>{review.score}</b>
-                              </Card.Title>
-                              <Card.Text>{review.description}</Card.Text>
-                            </Card.Body>
-                          </Card>
-                        ))}
+                              <Card.Header>
+                                <h5>
+                                  {review.score <= 2.0
+                                    ? "Unsatisfied"
+                                    : review.score > 2 && review.score < 4
+                                    ? "Impartial"
+                                    : "Satisfied"}
+                                </h5>
+                              </Card.Header>
+                              <Card.Body
+                                style={
+                                  review.score <= 2.0
+                                    ? { backgroundColor: "#FFCCCC" }
+                                    : review.score > 2 && review.score < 4
+                                    ? { backgroundColor: "#FFFFCC" }
+                                    : { backgroundColor: "#CCFFCC" }
+                                }
+                              >
+                                <Card.Title>
+                                  <b>{review.score}</b>
+                                </Card.Title>
+                                <Card.Text>{review.description}</Card.Text>
+                              </Card.Body>
+                            </Card>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div> : null }
+              ) : null}
             </div>
           </div>
         </div>

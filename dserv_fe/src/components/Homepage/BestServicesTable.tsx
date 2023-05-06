@@ -126,7 +126,7 @@ const BestServicesTable = () => {
         <Pagination>
           <Pagination.First onClick={goToFirst}/>
           <Pagination.Prev onClick={goToPrev} disabled={currentPage <= 1}/>
-          {pages.map((item, index) => (
+          {pages.map((_item, index) => (
             <Pagination.Item active={index + 1 === currentPage}
             onClick={() => changePage(index + 1)} key={index}>{index + 1} </Pagination.Item>
           ))}

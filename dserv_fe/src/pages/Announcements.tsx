@@ -31,7 +31,7 @@ const Announcements = () => {
     <>
       <h1 style={{margin: '30px'}}>Check the newest announcements</h1>
       <Row className="main-content">{
-        serviceData.map((item, index) => (
+        serviceData.map((item) => (
                 <ServiceCard props={item}></ServiceCard>
         ))
         }</Row>
