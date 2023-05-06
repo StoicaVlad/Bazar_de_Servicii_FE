@@ -7,7 +7,6 @@ import axiosBaseURL from "../../components/HttpCommon";
 function CreateService(props: any) {
   const [errorString, setErrorString] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
-  console.log(props);
 
   const [serviceData] = useState({
     title: "",
@@ -57,7 +56,6 @@ function CreateService(props: any) {
         if (!validationMessage.length || !response.data.includes(" ")) {
           setValidationMessage(response.data);
         }
-        console.log(validationMessage);
       })
       .catch((error) => {
         const errorUnjsonified = error.request.response.split("message").pop();

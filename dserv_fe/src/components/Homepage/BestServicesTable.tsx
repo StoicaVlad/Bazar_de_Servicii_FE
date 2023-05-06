@@ -11,7 +11,7 @@ let config = {
   },
 };
 
-const BestServicesTable = () => {
+const BestServicesTable = (props: any) => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [tablePageData, setTablePageData] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -22,7 +22,7 @@ const BestServicesTable = () => {
 
   useEffect(() => {
     axiosBaseURL
-      .get("api/services/show", config)
+      .get("api/services/bestInTown?currentUserProfileId=" + props.props, config)
       .then((response) => {
         setTableData(response?.data);
         setTablePageData(response?.data.slice(0, pageSize));

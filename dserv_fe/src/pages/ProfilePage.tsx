@@ -20,7 +20,9 @@ const ProfilePage = (props: any) => {
   const [reviewsData, setReviewsData] = useState<any[]>([]);
   const [showReviews, setShowReviews] = useState(false);
   const [showCreateReviewModal, setShowCreateReviewModal] = useState(false);
-  const handleCloseModal = () => {setShowCreateReviewModal(false)};
+  const handleCloseModal = () => {
+    setShowCreateReviewModal(false);
+  };
 
   let config = {
     headers: {
@@ -70,7 +72,12 @@ const ProfilePage = (props: any) => {
 
   return (
     <>
-    {showCreateReviewModal ? <CreateReview props={{token: props.props.token, userId: profileId}} handleClose={handleCloseModal}/> : null}
+      {showCreateReviewModal ? (
+        <CreateReview
+          props={{ token: props.props.token, userId: profileId }}
+          handleClose={handleCloseModal}
+        />
+      ) : null}
       <div className="container">
         <div className="main-body">
           <div className="row gutters-sm">
@@ -140,7 +147,7 @@ const ProfilePage = (props: any) => {
                   </div>
                   <hr></hr>
                   <div className="row">
-                    {profileId === props.props.profileId ? (
+                    {/* {profileId === props.props.profileId ? (
                       <div className="col-sm-12">
                         <a
                           className="btn btn-info "
@@ -150,19 +157,21 @@ const ProfilePage = (props: any) => {
                           Edit
                         </a>
                       </div>
-                    ) : null}
+                    ) : null} */}
 
-                    <div className="col-sm-12 mb-2">
-                      <a
-                        className="btn btn-info "
-                        target="__blank"
-                        onClick={() => {
-                          setShowCreateReviewModal(true);
-                        }}
-                      >
-                        Add a review
-                      </a>
-                    </div>
+                    {profileId !== props.props.profileId ? (
+                      <div className="col-sm-12 mb-2">
+                        <a
+                          className="btn btn-info "
+                          target="__blank"
+                          onClick={() => {
+                            setShowCreateReviewModal(true);
+                          }}
+                        >
+                          Add a review
+                        </a>
+                      </div>
+                    ) : null}
 
                     {reviewsData.length ? (
                       <div className="col-sm-12">

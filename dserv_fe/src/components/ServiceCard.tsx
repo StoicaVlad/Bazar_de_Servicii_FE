@@ -3,7 +3,6 @@ import { useState } from "react";
 
 
 const ServiceCard = (serviceInfo: any) => {
-  console.log(serviceInfo);
 
   const [showDetails, setShowDetails] = useState(false);
   const handleDetailsButtonClicked = () => {
@@ -19,7 +18,6 @@ const ServiceCard = (serviceInfo: any) => {
 
   const goToUserReviews = () => {
     let url = "/profile/" + serviceInfo.props.ownerProfileId;
-    console.log(url);
     redirect(url);
   }
 

@@ -114,7 +114,7 @@ function App() {
             ) : null}
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home props={profileId}/>} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/announcements" element={<Announcements />} />
                 <Route
